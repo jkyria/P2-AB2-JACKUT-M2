@@ -145,20 +145,25 @@ public class Usuario implements Serializable {
     }
 
     // Métodos para fã-ídolo
-    public void adicionarIdolo(String idolo) {
-        idolos.add(idolo);
+    public void adicionarIdolo(String idolo) {idolos.add(idolo);
+    }
+    public boolean ehIdolo(String login) {return this.idolos.contains(login);
     }
 
-    public void adicionarFa(String fa) {
-        fas.add(fa);
+
+    public void adicionarFa(String fa) {fas.add(fa);
     }
 
-    public boolean ehFa(String idolo) {
-        return idolos.contains(idolo);
+    public boolean ehFa(String idolo) {return this.fas.contains(idolo);
     }
 
-    public Set<String> getFas() {
-        return Collections.unmodifiableSet(fas);
+    public Set<String> getFas() {return Collections.unmodifiableSet(fas);
+    }
+
+    public List<String> getFasOrdenado() {
+        List<String> lista = new ArrayList<>(this.fas);
+        Collections.sort(lista);
+        return lista;
     }
 
     // Métodos para paquera
@@ -181,6 +186,13 @@ public class Usuario implements Serializable {
 
     public boolean ehInimigo(String inimigo) {
         return inimigos.contains(inimigo);
+    }
+    public Set<String> getInimigos() {
+        return Collections.unmodifiableSet(inimigos);
+    }
+
+    public Set<String> getIdolos() {
+        return Collections.unmodifiableSet(idolos);
     }
 
     @Override
