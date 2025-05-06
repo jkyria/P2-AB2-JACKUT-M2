@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="easyaccept">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/P2-2023.1-JACKUT/lib/easyaccept.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

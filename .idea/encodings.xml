@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="ISO-8859-1">
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/Main.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/AmizadeExistenteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/AtributoNaoPreenchidoException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/AutoRelacionamentoException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/ComunidadeExistenteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/ComunidadeNaoExistenteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/ConvitePendenteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/CredenciaisInvalidasException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/JackutException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/LoginInvalidoException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/SemRecadosException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/SenhaInvalidaException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/SessaoInvalidaException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/UsuarioExistenteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/exceptions/UsuarioNaoEncontradoException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/models/Comunidade.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/models/Facade.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/models/Perfil.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/src/br/ufal/ic/p2/jackut/models/Usuario.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us1_2.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us2_1.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us2_2.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us3_1.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us3_2.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us4_1.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us4_2.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us5_1.txt" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us5_2.txt" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us6_1.txt" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/P2-2023.1-JACKUT/tests/us6_2.txt" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/database/comunidades.usr" charset="UTF-8" />
+  </component>
+</project>

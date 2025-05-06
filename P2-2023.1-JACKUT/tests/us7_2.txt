@@ -1,0 +1,22 @@
+# User Story 7 - Envio de mensagens a comunidades - Teste de persistência
+
+s1=abrirSessao login=jpsauve senha=sauvejp
+s2=abrirSessao login=oabath senha=abatho
+s3=abrirSessao login=jdoe senha=abc
+
+expect "Mensagem de Jacques para a comunidade de Jacques" lerMensagem id=${s1}
+expect "Mensagem de Osorio para a comunidade de Jacques" lerMensagem id=${s1}
+expect "Mensagem de John para a comunidade de Jacques" lerMensagem id=${s1}
+expect "Mensagem de Jacques para a comunidade de Jacques" lerMensagem id=${s2}
+expect "Mensagem de Osorio para a comunidade de Jacques" lerMensagem id=${s2}
+expect "Mensagem de John para a comunidade de Jacques" lerMensagem id=${s2}
+expect "Mensagem de Jacques para a comunidade de Jacques" lerMensagem id=${s3}
+expect "Mensagem de Osorio para a comunidade de Jacques" lerMensagem id=${s3}
+expect "Mensagem de John para a comunidade de Jacques" lerMensagem id=${s3}
+
+expectError "Não há mensagens." lerMensagem id=${s1}
+expectError "Não há mensagens." lerMensagem id=${s2}
+expectError "Não há mensagens." lerMensagem id=${s3}
+
+encerrarSistema
+quit
