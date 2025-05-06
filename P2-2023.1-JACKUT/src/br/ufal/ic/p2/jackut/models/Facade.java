@@ -578,14 +578,11 @@ public class Facade {
             throw new ComunidadeNaoExistenteException();
         }
 
-        // Formata a mensagem com o remetente
-        String mensagemFormatada = "[" + remetente.getLogin() + "] " + mensagem;
-
-        // Envia para cada membro
+        // Remove a formatação do remetente - envia apenas o conteúdo puro
         for (String loginMembro : comunidade.getMembros()) {
             Usuario membro = usuarios.get(loginMembro);
             if (membro != null) {
-                membro.receberMensagem(mensagemFormatada);
+                membro.receberMensagem(mensagem); // Agora só a mensagem, sem prefixo
             }
         }
     }
