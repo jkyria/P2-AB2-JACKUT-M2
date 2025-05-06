@@ -13,14 +13,14 @@ public class Usuario implements Serializable {
     private final Set<String> amigos = new LinkedHashSet<>();
     private final Set<String> solicitacoesEnviadas = new LinkedHashSet<>();
     private final Set<String> solicitacoesRecebidas = new LinkedHashSet<>();
-    private final Queue<String> recadosRecebidos = new LinkedList<>();
+    private Queue<String> recadosRecebidos = new LinkedList<>();
     private List<String> comunidades = new ArrayList<>(); // Mantém ordem de inserção
     //Add Mensagens
     private String[] mensagens;  // Array para armazenar mensagens
     private int inicio = 0;      // Índice do início da fila
     private int fim = 0;         // Índice do fim da fila
     private int tamanho = 0;     // Número de mensagens na fila
-    private static final int CAPACIDADE_MAXIMA = 100;  // Tamanho fixo (ajuste conforme necessário)
+    private static final int CAPACIDADE_MAXIMA = 100;
     //Para criação de novos relacionamentos
     private final Set<String> idolos = new LinkedHashSet<>();
     private final Set<String> fas = new LinkedHashSet<>();
@@ -32,7 +32,7 @@ public class Usuario implements Serializable {
         this.senha = senha;
         this.nome = nome;
         this.perfil = new Perfil();
-        this.comunidades = new ArrayList<>(); // Inicializa a lista
+        this.comunidades = new ArrayList<>();
         this.mensagens = new String[CAPACIDADE_MAXIMA];
     }
 
@@ -75,6 +75,9 @@ public class Usuario implements Serializable {
     }
 
     public String lerRecado() {
+        if (recadosRecebidos.isEmpty()) {
+            throw new RuntimeException("Nao ha recados.");
+        }
         return recadosRecebidos.poll();
     }
 
@@ -195,6 +198,10 @@ public class Usuario implements Serializable {
         return Collections.unmodifiableSet(idolos);
     }
 
+    public void setRecadosRecebidos(Queue<String> recados) {
+        this.recadosRecebidos = recados;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -206,5 +213,8 @@ public class Usuario implements Serializable {
     @Override
     public int hashCode() {
         return login.hashCode();
+    }
+
+    public void removerRelacionamentosDoUsuario(String login) {
     }
 }

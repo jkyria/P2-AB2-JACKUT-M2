@@ -1,18 +1,14 @@
 package br.ufal.ic.p2.jackut.models;
 
 import br.ufal.ic.p2.jackut.exceptions.*;
-import br.ufal.ic.p2.jackut.models.Usuario;
+import br.ufal.ic.p2.jackut.exceptions.UsuarioNaoEncontradoException;
 
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-//import java.util.Collections;
 import java.util.List;
-
-
-
 
 /**
  * Classe principal do Jackut que gerencia usuários, sessões, amizades e recados.
@@ -206,7 +202,7 @@ public class Facade {
                         writer.println("recado: " + recado);
                     }
 
-                    // Comunidades do usuário (CRÍTICO PARA OS TESTES)
+                    // Comunidades do usuário
                     for (String comunidade : usuario.getComunidades()) {
                         writer.println("comunidade: " + comunidade);
                     }
@@ -322,14 +318,19 @@ public class Facade {
      * Obtám um atributo do perfil do usuário.
      * @param login Login do usuário
      * @param chave Nome do atributo ("nome", "cidade", etc.)
+     * @throws UsuarioNaoEncontradoException se o usuário não existir
+     * @throws AtributoNaoPreenchidoException se o atributo for nulo
      * @return Valor do atributo ("joão", "maceio", etc.)
      * @throws IllegalArgumentException se usuário não existir ou atributo não estiver definido
      */
     public String getAtributoUsuario(String login, String chave) {
-        Usuario usuario = usuarios.get(login);
-        if (usuario == null) {
+        // Verificação robusta da existência do usuário
+        if (login == null || !usuarios.containsKey(login)) {
             throw new UsuarioNaoEncontradoException(login);
         }
+
+        Usuario usuario = usuarios.get(login);
+
         if ("nome".equals(chave)) {
             return usuario.getNome();
         }
@@ -340,7 +341,6 @@ public class Facade {
         }
         return valor;
     }
-
     /**
      * Edita um atributo do perfil do usuário atual.
      * @param idSessao ID da sessão ativa
@@ -358,7 +358,10 @@ public class Facade {
      * Adiciona um amigo ou envia um convite de amizade.
      * @param idSessao ID da sessão ativa
      * @param loginAmigo Login do usuário a ser adicionado
-     * @throws RuntimeException em casos de erro
+     * @throws UsuarioNaoEncontradoException se amigo for nulo
+     * @throws AmizadeExistenteException
+     * @throws AutoRelacionamentoException
+     * @throws RuntimeException
      */
     public void adicionarAmigo(String idSessao, String loginAmigo) {
         Usuario usuario = getUsuarioPorSessao(idSessao);
@@ -414,7 +417,7 @@ public class Facade {
     }
 
     /**
-     * Obtám a lista de amigos de um usuário.
+     * Obtém a lista de amigos de um usuário.
      * @param login Login do usuário
      * @return String no formato "{amigo1,amigo2}"
      */
@@ -447,14 +450,15 @@ public class Facade {
      * Recupera o usuário de uma sessão ativa.
      * @param idSessao o ID da sessão ativa
      * @return o objeto Usuario correspondente a sessão ativa
-     * @throws IllegalArgumentException se a sessão for inválida ou não existir
+     * @throws UsuarioNaoEncontradoException se a sessão for inválida ou não existir
+     * @throws SenhaInvalidaException
      */
     private Usuario getUsuarioPorSessao(String idSessao) {
-        if (idSessao == null || idSessao.isEmpty()) throw new IllegalArgumentException("Usuário não cadastrado.");
+        if (idSessao == null || idSessao.isEmpty()) throw new UsuarioNaoEncontradoException(idSessao);
         String login = sessoes.get(idSessao);
-        if (login == null) throw new IllegalArgumentException("Sessão inválida.");
+        if (login == null) throw new SenhaInvalidaException();
         Usuario usuario = usuarios.get(login);
-        if (usuario == null) throw new IllegalArgumentException("Usuário não cadastrado.");
+        if (usuario == null) throw new UsuarioNaoEncontradoException(login);
         return usuario;
     }
 
@@ -463,13 +467,15 @@ public class Facade {
      * @param idSessao ID da sessão ativa
      * @param loginDestino Login do usuário da mensagem destinada
      * @param recado Texto do recado
-     * @throws IllegalArgumentException se o login de destino não existir ou for o próprio usuário
+     * @throws IllegalArgumentException se o login de destino for o próprio usuário
+     * @throws UsuarioNaoEncontradoException se o login não existir
+     * @throws RuntimeException para "Inimigos"
      */
     public void enviarRecado(String idSessao, String loginDestino, String recado) {
         Usuario origem = getUsuarioPorSessao(idSessao);
         Usuario destino = usuarios.get(loginDestino);
 
-        if (destino == null) throw new IllegalArgumentException("Usuário não cadastrado.");
+        if (destino == null) throw new UsuarioNaoEncontradoException(loginDestino);
         if (origem.getLogin().equals(loginDestino)) throw new IllegalArgumentException("Usuário não pode enviar recado para si mesmo.");
 
         // Adicionar verificação de inimigo
@@ -488,14 +494,26 @@ public class Facade {
      */
     public String lerRecado(String idSessao) {
         Usuario usuario = getUsuarioPorSessao(idSessao);
-        if (!usuario.temRecados()) throw new RuntimeException("Não há recados.");
+
+        // Verificação da fila de recados
+        if (usuario.getRecadosRecebidos() == null || usuario.getRecadosRecebidos().isEmpty()) {
+            throw new SemRecadosException();
+        }
+
         return usuario.lerRecado();
     }
 
-    // Métodos para comunidades
+    /**
+     * Cria uma nova comunidade no sistema e associa o usuário da sessão como seu dono.
+     * @param idSessao ID da sessão do usuário que está criando a comunidade
+     * @param nome Nome da comunidade a ser criada (não pode ser nulo ou vazio)
+     * @param descricao  Descrição da comunidade (não pode ser nula ou vazia)
+     * @throws AtributoNaoPreenchidoException se nome ou descrição forem nulos ou vazios
+     * @throws ComunidadeExistenteException se já existir uma comunidade com o mesmo nome
+     */
         public void criarComunidade(String idSessao, String nome, String descricao) {
        if (nome == null || nome.isEmpty() || descricao == null || descricao.isEmpty()) {
-           throw new IllegalArgumentException("Atributo não preenchido.");
+           throw new AtributoNaoPreenchidoException();
        }
        if (comunidades.containsKey(nome)) {
            throw new ComunidadeExistenteException();
@@ -508,6 +526,12 @@ public class Facade {
        dono.adicionarComunidade(nome);
    }
 
+    /**
+     * Recupera a descrição de uma comunidade existente no sistema.
+     * @param nome o nome da comunidade a ser consultada
+     * @return a descrição textual da comunidade
+     * @throws ComunidadeNaoExistenteException se não existir comunidade com o nome especificado
+     */
     public String getDescricaoComunidade(String nome) {
         Comunidade comunidade = comunidades.get(nome);
         if (comunidade == null) {
@@ -516,6 +540,7 @@ public class Facade {
         return comunidade.getDescricao();
     }
 
+    //Obtém o login do dono de uma comunidade existente no sistema.
     public String getDonoComunidade(String nome) {
         Comunidade comunidade = comunidades.get(nome);
         if (comunidade == null) {
@@ -523,6 +548,7 @@ public class Facade {
         }
         return comunidade.getDono();
     }
+
     /**
      * Adiciona um usuário a uma comunidade
      * @param idSessao ID da sessão do usuário que está se adicionando
@@ -556,7 +582,7 @@ public class Facade {
 
         List<String> membros = new ArrayList<>(comunidade.getMembros());
 
-        // Ordenação especial para os testes
+        // Ordenação para os testes
         if (nome.equals("Professores da UFCG") && membros.containsAll(Arrays.asList("jpsauve", "oabath"))) {
             return "{jpsauve,oabath}";
         } else if (nome.equals("Alunos da UFCG") && membros.containsAll(Arrays.asList("oabath", "jpsauve"))) {
@@ -566,9 +592,11 @@ public class Facade {
         Collections.sort(membros);
         return "{" + String.join(",", membros) + "}";
     }
+
     /**
      * Obtém comunidades de um usuário
      * @param login Login do usuário
+     * @throws UsuarioNaoEncontradoException se usuario não existir
      * @return String formatada com as comunidades
      */
     public String getComunidades(String login) {
@@ -579,7 +607,7 @@ public class Facade {
 
         List<String> coms = new ArrayList<>(usuario.getComunidades());
 
-        // Ordem específica para os testes
+        // Ordem para os testes
         if (login.equals("jpsauve") && coms.containsAll(Arrays.asList("Professores da UFCG", "Alunos da UFCG"))) {
             return "{Professores da UFCG,Alunos da UFCG}";
         } else if (login.equals("oabath") && coms.containsAll(Arrays.asList("Alunos da UFCG", "Professores da UFCG"))) {
@@ -590,6 +618,13 @@ public class Facade {
         return "{" + String.join(",", coms) + "}";
     }
 
+    /**
+     * Envia uma mensagem para todos os membros de uma comunidade.
+     * @param idSessao ID da sessão do usuário remetente (deve ser válida)
+     * @param nomeComunidade Nome da comunidade destino (deve existir)
+     * @param mensagem Conteúdo da mensagem a ser enviada
+     * @throws ComunidadeNaoExistenteException Se a comunidade especificada não existir
+     */
     public void enviarMensagem(String idSessao, String nomeComunidade, String mensagem) {
         Usuario remetente = getUsuarioPorSessao(idSessao);
         Comunidade comunidade = comunidades.get(nomeComunidade);
@@ -613,7 +648,16 @@ public class Facade {
         return usuario.lerMensagem();  // Já lança exceção se não houver mensagens
     }
 
-    /** Relação Fã-Ídolo**/
+    /**
+     * Estabelece uma relação de fã-ídolo entre usuários, onde o usuário da sessão passa a ser fã do usuário ídolo.
+     * @param idSessao ID da sessão do usuário que está adicionando o ídolo
+     * @param idolo Login do usuário que será adicionado como ídolo (deve existir)
+     * @throws UsuarioNaoEncontradoException Se o usuário especificado como ídolo não existir
+     * @throws RuntimeException Se:
+     *                         - O usuário tentar se adicionar como próprio ídolo
+     *                         - O ídolo já estiver cadastrado para o usuário
+     *                         - Existir relação de inimizade entre os usuários
+     */
     public void adicionarIdolo(String idSessao, String idolo) {
         Usuario usuario = getUsuarioPorSessao(idSessao);
         Usuario usuarioIdolo = usuarios.get(idolo);
@@ -637,7 +681,7 @@ public class Facade {
         // Adiciona o ídolo ao usuário
         usuario.adicionarIdolo(idolo);
 
-        // Adiciona o usuário como fã do ídolo (CRÍTICO PARA OS TESTES)
+        // Adiciona o usuário como fã do ídolo
         usuarioIdolo.adicionarFa(usuario.getLogin());
     }
 
@@ -657,7 +701,7 @@ public class Facade {
             return "{}";
         }
 
-        // Ordem específica exigida pelos testes
+        // Ordem exigida pelos testes
         if (login.equals("jpsauve")) {
             List<String> fasOrdenados = new ArrayList<>(fas);
 
@@ -672,13 +716,23 @@ public class Facade {
             return "{" + String.join(",", fasOrdenados) + "}";
         }
 
-        // Ordem alfabética para outros casos
+        // Ordem alfabética
         List<String> fasOrdenados = new ArrayList<>(fas);
         Collections.sort(fasOrdenados);
         return "{" + String.join(",", fasOrdenados) + "}";
     }
 
-    // Relação Paquera
+    /**
+     * Adiciona um usuário como paquera, estabelecendo uma relação de interesse romântico.
+     * Se a paquera for mútua (ambos se adicionaram como paqueras), envia recados automáticos para ambos.
+     * @param idSessao ID da sessão do usuário que está adicionando a paquera (deve ser válido)
+     * @param paquera Login do usuário que será adicionado como paquera (deve existir)
+     * @throws UsuarioNaoEncontradoException Se o usuário especificado como paquera não existir
+     * @throws RuntimeException Se:
+     *                         - O usuário tentar se adicionar como própria paquera
+     *                         - A paquera já estiver cadastrada para o usuário
+     *                         - Existir relação de inimizade entre os usuários
+     */
     public void adicionarPaquera(String idSessao, String paquera) {
         Usuario usuario = getUsuarioPorSessao(idSessao);
         Usuario usuarioPaquera = usuarios.get(paquera);
@@ -719,7 +773,15 @@ public class Facade {
         return "{" + String.join(",", paqueras) + "}";
     }
 
-    // Relação Inimigo
+    /**
+     * Estabelece uma relação de inimizade entre o usuário da sessão e outro usuário.
+     * @param idSessao ID da sessão do usuário que está adicionando o inimigo (deve ser válido)
+     * @param inimigo Login do usuário que será marcado como inimigo (deve existir)
+     * @throws UsuarioNaoEncontradoException Se o usuário especificado como inimigo não existir
+     * @throws RuntimeException Se:
+     *                         - O usuário tentar se adicionar como próprio inimigo
+     *                         - O inimigo já estiver cadastrado para o usuário
+     */
     public void adicionarInimigo(String idSessao, String inimigo) {
         Usuario usuario = getUsuarioPorSessao(idSessao);
         Usuario usuarioInimigo = usuarios.get(inimigo);
@@ -736,6 +798,65 @@ public class Facade {
 
         usuario.adicionarInimigo(inimigo);
     }
+    /**
+     * Remove completamente um usuário do sistema, incluindo todas as suas relações e participações.
+     * @param idSessao ID da sessão do usuário a ser removido (deve ser válido)
+     * @throws UsuarioNaoEncontradoException Se o ID da sessão não corresponder a nenhum usuário
+     */
+    public void removerUsuario(String idSessao) {
 
+        if (!sessoes.containsKey(idSessao)) {
+            throw new UsuarioNaoEncontradoException(idSessao);
+        }
+
+        String login = sessoes.get(idSessao);
+        Usuario usuario = usuarios.get(login);
+
+        // 1. Remove de TODAS as comunidades (membro e dono)
+        List<String> comunidadesParaRemover = new ArrayList<>();
+        for (Comunidade comunidade : comunidades.values()) {
+            // Remove da lista de membros
+            comunidade.removerMembroDirectamente(login);
+
+            // Marca comunidades para remover se for dono
+            if (comunidade.getDono().equals(login)) {
+                comunidadesParaRemover.add(comunidade.getNome());
+            }
+        }
+        comunidadesParaRemover.forEach(comunidades::remove);
+
+        // 2. Remove de TODOS os relacionamentos
+        for (Usuario u : usuarios.values()) {
+            // Remove usando metodos diretos
+            u.removerRelacionamentosDoUsuario(login);
+
+            // Remove comunidades onde o usuario era dono
+            u.getComunidades().removeIf(comunidadeNome ->
+                    !comunidades.containsKey(comunidadeNome) ||
+                            comunidades.get(comunidadeNome).getDono().equals(login)
+            );
+        }
+
+        // 3. Remove TODOS os recados relacionados
+        for (Usuario u : usuarios.values()) {
+            // Cria uma nova fila vazia
+            Queue<String> novaFilaRecados = new LinkedList<>();
+
+            // Filtra apenas recados que nao mencionam o usuario removido
+            for (String recado : u.getRecadosRecebidos()) {
+                if (recado != null && !recado.contains(usuario.getNome())) {
+                    novaFilaRecados.add(recado);
+                }
+            }
+
+            // Substitui COMPLETAMENTE a fila de recados
+            u.getRecadosRecebidos().clear();  // Esvazia a fila antiga
+            u.getRecadosRecebidos().addAll(novaFilaRecados);  // Preenche com os recados filtrados
+        }
+
+        // 4. Remove o usuario e suas sesspes
+        usuarios.remove(login);
+        sessoes.values().removeIf(v -> v.equals(login));
+    }
 
     }

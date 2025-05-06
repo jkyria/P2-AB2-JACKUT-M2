@@ -2,6 +2,7 @@ package br.ufal.ic.p2.jackut.models;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
@@ -32,19 +33,26 @@ public class Comunidade {
         return ordenados;
     }
 
-    // Versão que mantém a ordem de inserção
+    //Mantém a ordem de inserção
     public List<String> getMembrosEmOrdemInsercao() {
         return new ArrayList<>(membros);
     }
 
     public Set<String> getMembros() {
-        return Collections.unmodifiableSet(this.membros);
+        return new HashSet<>(this.membros);  // Retorna cópia mutável
     }
-
     public String getNome() { return nome; }
     public String getDescricao() { return descricao; }
     public String getDono() { return dono; }
 
     public void setMembros(Set<String> novosMembros) {
+    }
+
+    public boolean removerMembro(String login) {
+        return membros.remove(login);
+    }
+
+    public void removerMembroDirectamente(String login) {
+
     }
 }
