@@ -21,6 +21,11 @@ public class Usuario implements Serializable {
     private int fim = 0;         // Índice do fim da fila
     private int tamanho = 0;     // Número de mensagens na fila
     private static final int CAPACIDADE_MAXIMA = 100;  // Tamanho fixo (ajuste conforme necessário)
+    //Para criação de novos relacionamentos
+    private final Set<String> idolos = new LinkedHashSet<>();
+    private final Set<String> fas = new LinkedHashSet<>();
+    private final Set<String> paqueras = new LinkedHashSet<>();
+    private final Set<String> inimigos = new LinkedHashSet<>();
 
     public Usuario(String login, String senha, String nome) {
         this.login = login;
@@ -137,6 +142,45 @@ public class Usuario implements Serializable {
     // Verifica se há mensagens
     public boolean temMensagens() {
         return tamanho > 0;
+    }
+
+    // Métodos para fã-ídolo
+    public void adicionarIdolo(String idolo) {
+        idolos.add(idolo);
+    }
+
+    public void adicionarFa(String fa) {
+        fas.add(fa);
+    }
+
+    public boolean ehFa(String idolo) {
+        return idolos.contains(idolo);
+    }
+
+    public Set<String> getFas() {
+        return Collections.unmodifiableSet(fas);
+    }
+
+    // Métodos para paquera
+    public void adicionarPaquera(String paquera) {
+        paqueras.add(paquera);
+    }
+
+    public boolean ehPaquera(String paquera) {
+        return paqueras.contains(paquera);
+    }
+
+    public Set<String> getPaqueras() {
+        return Collections.unmodifiableSet(paqueras);
+    }
+
+    // Métodos para inimigo
+    public void adicionarInimigo(String inimigo) {
+        inimigos.add(inimigo);
+    }
+
+    public boolean ehInimigo(String inimigo) {
+        return inimigos.contains(inimigo);
     }
 
     @Override

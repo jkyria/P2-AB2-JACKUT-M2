@@ -592,5 +592,94 @@ public class Facade {
         Usuario usuario = getUsuarioPorSessao(idSessao);
         return usuario.lerMensagem();  // Já lança exceção se não houver mensagens
     }
+    // Relação Fã-Ídolo
+    public void adicionarIdolo(String idSessao, String idolo) {
+        Usuario usuario = getUsuarioPorSessao(idSessao);
+        Usuario usuarioIdolo = usuarios.get(idolo);
+
+        if (usuarioIdolo == null) {
+            throw new UsuarioNaoEncontradoException(idolo);
+        }
+        if (usuario.getLogin().equals(idolo)) {
+            throw new RuntimeException("Usuário não pode ser fã de si mesmo.");
+        }
+        if (usuario.ehFa(idolo)) {
+            throw new RuntimeException("Usuário já está adicionado como ídolo.");
+        }
+
+        usuario.adicionarIdolo(idolo);
+        usuarioIdolo.adicionarFa(usuario.getLogin());
+    }
+
+    public boolean ehFa(String login, String idolo) {
+        Usuario usuario = usuarios.get(login);
+        return usuario != null && usuario.ehFa(idolo);
+    }
+
+    public String getFas(String login) {
+        Usuario usuario = usuarios.get(login);
+        if (usuario == null) return "{}";
+
+        List<String> fas = new ArrayList<>(usuario.getFas());
+        Collections.sort(fas);
+        return "{" + String.join(",", fas) + "}";
+    }
+
+    // Relação Paquera
+    public void adicionarPaquera(String idSessao, String paquera) {
+        Usuario usuario = getUsuarioPorSessao(idSessao);
+        Usuario usuarioPaquera = usuarios.get(paquera);
+
+        if (usuarioPaquera == null) {
+            throw new UsuarioNaoEncontradoException(paquera);
+        }
+        if (usuario.getLogin().equals(paquera)) {
+            throw new RuntimeException("Usuário não pode ser paquera de si mesmo.");
+        }
+        if (usuario.ehPaquera(paquera)) {
+            throw new RuntimeException("Usuário já está adicionado como paquera.");
+        }
+        if (usuario.ehInimigo(paquera) || usuarioPaquera.ehInimigo(usuario.getLogin())) {
+            throw new RuntimeException("Função inválida: " + paquera + " é seu inimigo.");
+        }
+
+        usuario.adicionarPaquera(paquera);
+
+        // Verifica se é paquera mútua
+        if (usuarioPaquera.ehPaquera(usuario.getLogin())) {
+            usuario.receberRecado(paquera + " é seu paquera - Recado do Jackut.");
+            usuarioPaquera.receberRecado(usuario.getLogin() + " é seu paquera - Recado do Jackut.");
+        }
+    }
+
+    public boolean ehPaquera(String idSessao, String paquera) {
+        Usuario usuario = getUsuarioPorSessao(idSessao);
+        return usuario != null && usuario.ehPaquera(paquera);
+    }
+
+    public String getPaqueras(String idSessao) {
+        Usuario usuario = getUsuarioPorSessao(idSessao);
+        List<String> paqueras = new ArrayList<>(usuario.getPaqueras());
+        Collections.sort(paqueras);
+        return "{" + String.join(",", paqueras) + "}";
+    }
+
+    // Relação Inimigo
+    public void adicionarInimigo(String idSessao, String inimigo) {
+        Usuario usuario = getUsuarioPorSessao(idSessao);
+        Usuario usuarioInimigo = usuarios.get(inimigo);
+
+        if (usuarioInimigo == null) {
+            throw new UsuarioNaoEncontradoException(inimigo);
+        }
+        if (usuario.getLogin().equals(inimigo)) {
+            throw new RuntimeException("Usuário não pode ser inimigo de si mesmo.");
+        }
+        if (usuario.ehInimigo(inimigo)) {
+            throw new RuntimeException("Usuário já está adicionado como inimigo.");
+        }
+
+        usuario.adicionarInimigo(inimigo);
+    }
 
     }
